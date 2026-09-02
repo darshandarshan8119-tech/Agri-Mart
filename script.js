@@ -53,3 +53,36 @@ const revealObserver = new IntersectionObserver(
 
 revealItems.forEach((item) => revealObserver.observe(item));
 setHeaderState();
+
+// Check if user is logged in
+const checkAuthState = () => {
+  try {
+    const rawUser = localStorage.getItem("agrimart_user");
+    if (!rawUser) return;
+    const user = JSON.parse(rawUser);
+    if (!user || !user.isLoggedIn) return;
+
+    const navAuth = document.querySelector('[data-auth-link="signin"]');
+    const navRegister = document.querySelector('[data-auth-link="register"]');
+
+    if (navAuth && navRegister) {
+      const displayName = user.fullname || (user.email ? user.email.split("@")[0] : "Farmer");
+      navAuth.textContent = `📊 ${displayName} (Dashboard)`;
+      navAuth.href = "dashboard.html";
+      navAuth.title = "Open Smart Farming Dashboard";
+
+      navRegister.textContent = "Sign Out";
+      navRegister.href = "javascript:void(0)";
+      navRegister.style.background = "#c82333";
+      navRegister.addEventListener("click", () => {
+        localStorage.removeItem("agrimart_user");
+        window.location.reload();
+      });
+    }
+  } catch (e) {
+    console.error("Auth state error:", e);
+  }
+};
+
+checkAuthState();
+
