@@ -42,8 +42,12 @@ export default function Features() {
         </div>
 
         <div className="feature-grid">
-          {featureCards.map((card) => (
-            <article className="feature-card reveal" key={card.title}>
+          {featureCards.map((card, i) => (
+            <article
+              className="feature-card reveal"
+              key={card.title}
+              style={{ '--card-index': i }}
+            >
               <div className={`feature-image ${card.cls}`} />
               <div className="feature-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24"><path d={card.iconPath} /></svg>

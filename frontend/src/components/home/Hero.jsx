@@ -21,20 +21,6 @@ export default function Hero() {
             <a className="btn btn-secondary" href="#features">Explore Features</a>
           </div>
         </div>
-
-        <aside className="hero-insight reveal" aria-label="Agri-MART platform preview">
-          <div className="scan-card">
-            <div className="scan-image" />
-            <div className="scan-status">
-              <span className="pulse" />
-              AI crop scan active
-            </div>
-          </div>
-          <div className="metric-row">
-            <div><strong>94%</strong><span>Disease confidence</span></div>
-            <div><strong>7.8t</strong><span>Yield estimate</span></div>
-          </div>
-        </aside>
       </div>
     </section>
   );
