@@ -52,24 +52,15 @@ def register_view(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def disease_scan_view(request):
+    """
+    POST /api/ai/disease-scan/
+    Accepts multipart/form-data with an 'image' field (leaf photo).
+    Delegates preprocessing and inference to disease_handler (singleton).
+    If no image is provided, returns a sample healthy-plant result or uses sample_key.
+    """
     image_file = request.FILES.get('image')
-    if not image_file and not request.data.get('sample_key'):
-        # Fall back to default sample diagnosis if no file provided
-        result = disease_handler.predict(None) if hasattr(disease_handler, 'predict') else {}
-        return Response(result)
-
-    result = disease_handler.predict(image_file) if image_file else {
-        "crop": "Tomato (Solanum lycopersicum)",
-        "disease": "Early Blight (Alternaria solani)",
-        "confidence": "96.8%",
-        "bar_width": "96.8%",
-        "symptoms": "Dark brown concentric ring spots on lower foliage leading to chlorosis.",
-        "treatments": [
-            "Prune and destroy infected bottom foliage.",
-            "Apply Mancozeb 75 WP (2g/L) or Copper Oxychloride 50 WP (2.5g/L) spray.",
-            "Transition irrigation to ground drip to prevent water splashing spores."
-        ]
-    }
+    sample_key = request.data.get('sample_key')
+    result = disease_handler.predict(image_file, sample_key=sample_key)
     return Response(result)
 
 

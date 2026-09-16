@@ -10,6 +10,7 @@ export default function DiseaseDetection() {
   const [scanning, setScanning] = useState(false);
   const [result, setResult] = useState(null);
   const [apiSource, setApiSource] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
   const fileInputRef = useRef();
 
   const loadSample = (key) => {
@@ -19,29 +20,32 @@ export default function DiseaseDetection() {
     setPreviewSrc(s.imgUrl);
     setPreviewTag(s.crop);
     setResult(null);
+    setErrorMsg('');
   };
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
     setFileToUpload(file);
+    setCurrentSample(null); // Clear preset sample so it doesn't mask real model results
     const reader = new FileReader();
     reader.onload = (ev) => {
       setPreviewSrc(ev.target.result);
       setPreviewTag(file.name || 'Custom Uploaded Leaf');
-      setCurrentSample(sampleDiseases.tomato_early_blight);
       setResult(null);
+      setErrorMsg('');
     };
     reader.readAsDataURL(file);
   };
 
   const runScan = async () => {
-    if (!previewSrc || !currentSample) {
+    if (!previewSrc) {
       alert('Please upload an image or click one of the quick test sample buttons below!');
       return;
     }
     setScanning(true);
     setResult(null);
+    setErrorMsg('');
     setApiSource('');
 
     try {
@@ -51,8 +55,12 @@ export default function DiseaseDetection() {
         const formData = new FormData();
         formData.append('image', fileToUpload);
         res = await apiRequest('/ai/disease-scan/', 'POST', formData, true);
-      } else {
+      } else if (currentSample) {
         res = await apiRequest('/ai/disease-scan/', 'POST', { sample_key: currentSample });
+      }
+
+      if (res && res.error) {
+        throw new Error(res.error);
       }
 
       setResult({
@@ -61,13 +69,20 @@ export default function DiseaseDetection() {
         confidence: res.confidence,
         barWidth: res.bar_width || res.confidence,
         symptoms: res.symptoms,
-        treatments: res.treatments || []
+        treatments: res.treatments || [],
+        severity: res.severity,
+        organicAlt: res.organic_alt
       });
-      setApiSource('Django Backend API (http://127.0.0.1:8000)');
-    } catch {
-      // Fallback to local simulator if Django backend is offline
-      setResult(currentSample);
-      setApiSource('Offline ML Inference Engine');
+      setApiSource('Django Backend AI Engine (plant_disease_model.keras)');
+    } catch (err) {
+      console.error('Scan error:', err);
+      if (fileToUpload) {
+        setErrorMsg('Unable to reach Django backend (http://127.0.0.1:8000). Please verify that the backend server is running: python manage.py runserver');
+      } else if (currentSample) {
+        // Fallback only for preset samples if backend is offline
+        setResult(currentSample);
+        setApiSource('Offline Sample Preview (Backend not reachable)');
+      }
     } finally {
       setScanning(false);
     }
@@ -126,7 +141,13 @@ export default function DiseaseDetection() {
 
         <div className="dash-card" id="diseaseResultCard">
           <h3>Diagnostic Results &amp; Treatment Plan</h3>
-          {!result ? (
+          {errorMsg ? (
+            <div className="empty-state" style={{ borderColor: 'rgba(239, 68, 68, 0.4)', background: 'rgba(239, 68, 68, 0.05)' }}>
+              <div className="empty-icon" style={{ color: '#ef4444' }}>⚠️</div>
+              <p style={{ color: '#ef4444', fontWeight: 600 }}>Backend Connection Required</p>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '8px' }}>{errorMsg}</p>
+            </div>
+          ) : !result ? (
             <div id="diseaseResultPlaceholder" className="empty-state">
               <div className="empty-icon">🔬</div>
               <p>Upload an image or pick a test sample, then press <strong>"Run AI Diagnostic Scan"</strong> to analyze.</p>
@@ -162,9 +183,8 @@ export default function DiseaseDetection() {
                 </ul>
               </div>
               <div className="badge-tag-row">
-                <span className="badge-tag">Severity: Moderate</span>
-                <span className="badge-tag">Spread Risk: High in humidity</span>
-                <span className="badge-tag">Organic Alternative: Neem Oil 3%</span>
+                <span className="badge-tag">Severity: {result.severity || 'Moderate'}</span>
+                <span className="badge-tag">Organic Alternative: {result.organicAlt || 'Neem Oil (3%)'}</span>
               </div>
             </div>
           )}

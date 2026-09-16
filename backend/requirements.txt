@@ -1,0 +1,8 @@
+Django>=6.0
+djangorestframework>=3.16.0
+django-cors-headers>=4.7.0
+pillow>=11.0.0
+numpy>=2.0.0
+scikit-learn>=1.6.0
+joblib>=1.4.0
+tensorflow>=2.20.0
