@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
-import { processFarmerQuery } from '../../utils/aiCopilotService';
+import { apiRequest } from '../../utils/api';
 import {
   CommodityPriceCard,
   ForecastRiskCard,
@@ -49,7 +49,7 @@ export default function ChatbotDrawer({ onNavigateFeature }) {
       id: 'welcome-1',
       sender: 'assistant',
       time: 'Just now',
-      text: `Namaste ${user?.fullname || 'Kisan Bandhu'}! I am your **Agri-AI Market & Farming Copilot**.\n\nWhether you need help with **mandi market prices**, **hold vs. sell risk alerts**, **leaf disease scanning**, or **soil crop recommendations**, ask me anything or tap a shortcut below!`,
+      text: `Namaste ${user?.fullname || 'Kisan Bandhu'}! I’m your Agri-AI companion. Tell me what you see in your field, ask about prices, or send a clear crop photo and we’ll work through it together.`,
       cardType: null,
       cardData: null,
       actions: [
@@ -85,13 +85,15 @@ export default function ChatbotDrawer({ onNavigateFeature }) {
     setLoading(true);
 
     try {
-      // Use the built-in local AI engine — no API key required.
-      // It covers all 10 Agri-MART features: market, disease, recommendation,
-      // yield, growth, comparison, forecast/risk, depth, buyers, and booking.
-      const response = await processFarmerQuery(textToSend, {
-        name: user?.fullname,
-        language
-      });
+      const formData = new FormData();
+      formData.append('message', textToSend);
+      formData.append('language', language);
+      formData.append('history', JSON.stringify(messages.slice(-10).map((item) => ({
+        role: item.sender === 'user' ? 'user' : 'assistant',
+        content: item.text
+      }))));
+      if (image) formData.append('image', image);
+      const response = await apiRequest('/ai/assistant/', 'POST', formData, true);
 
       const assistantMessage = {
         id: `asst-${Date.now()}`,
@@ -112,7 +114,7 @@ export default function ChatbotDrawer({ onNavigateFeature }) {
           id: `asst-${Date.now()}`,
           sender: 'assistant',
           time: 'Just now',
-          text: `Sorry, I ran into an issue. Please try again or use the feature buttons above.`,
+          text: `I could not reach the farm assistant: ${err.message}. Please try again after checking the backend connection.`,
           cardType: null,
           cardData: null,
           actions: [{ label: '🌾 View Market Prices', feature: 'market' }]

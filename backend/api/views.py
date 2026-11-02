@@ -223,7 +223,11 @@ ASSISTANT_TOOLS = [
     {"type": "function", "function": {"name": "diagnose_uploaded_leaf", "description": "Return the result from the project's disease model for the image the farmer uploaded. Call only when an image is available.", "parameters": {"type": "object", "properties": {}}}},
 ]
 
-SYSTEM_PROMPT = """You are Agri-MART's farming assistant for Indian farmers. Reply in the farmer's requested language (Kannada, Hindi, or English), in short, simple spoken sentences. Use project tools for facts; never invent prices, diagnoses, or model results. If important data is missing, ask one short question at a time. A photo diagnosis is advisory, not a substitute for a local agricultural officer. For pesticide advice, state that label directions and local regulations must be followed. You help farmers use Agri-MART's market, disease scan, crop recommendation, yield prediction, and growth monitoring features."""
+SYSTEM_PROMPT = """You are Agri-MART's warm, intelligent farming companion for Indian farmers. Hold a natural conversation, remember what the farmer has said in the supplied conversation, and reply in the farmer's requested language (Kannada, Hindi, or English). Never sound like a dashboard or a canned feature list.
+
+For a broad question such as "crop disease" or "my plant is sick", do NOT name a disease. Respond naturally, acknowledge the concern, and ask for either a clear photo plus the crop name or one useful symptom (spots, yellowing, curling, wilting, insects). Use diagnose_uploaded_leaf only after a photo is available. Make it clear that the result is advisory and a local agricultural officer should be contacted for severe outbreaks.
+
+Use project tools only when they add a fact: current market data, provided soil readings, yield inputs, growth status, or an uploaded leaf image. Never invent prices, diagnoses, or model results. If inputs for a tool are missing, ask one short, friendly follow-up question rather than guessing. Explain recommendations in simple everyday terms, and for pesticide advice remind the farmer to follow the label and local regulations. Your job is to help the farmer think through their situation, not just display cards."""
 
 
 def _openrouter_completion(messages, tools=None):
@@ -263,7 +267,17 @@ def _tool_result(name, args, image_file=None):
         result = disease_handler.predict(image_file)
         if result.get('error'):
             return result, None, {}
-        return result, 'disease', {"crop": result['crop'], "diseaseName": result['disease'], "confidence": f"{float(result['confidence']) * 100:.1f}%", "severity": result['severity'], "symptoms": result['symptoms'], "organicCure": result.get('organic_alt', ''), "chemicalCure": '; '.join(result.get('treatments', []))}
+        # The disease loader may return either 0.803 or the already-formatted
+        # string "80.3%". Normalise both forms so photo uploads cannot crash.
+        confidence = str(result.get('confidence', '—')).strip()
+        try:
+            if confidence.endswith('%'):
+                confidence = f"{float(confidence[:-1]):.1f}%"
+            else:
+                confidence = f"{float(confidence) * 100:.1f}%"
+        except ValueError:
+            confidence = '—'
+        return result, 'disease', {"crop": result['crop'], "diseaseName": result['disease'], "confidence": confidence, "severity": result['severity'], "symptoms": result['symptoms'], "organicCure": result.get('organic_alt', ''), "chemicalCure": '; '.join(result.get('treatments', []))}
     return {"error": "The requested tool is unavailable."}, None, {}
 
 
@@ -279,7 +293,19 @@ def ai_assistant_view(request):
         return Response({'error': 'Please upload an image smaller than 8 MB.'}, status=status.HTTP_400_BAD_REQUEST)
 
     user_content = message or 'Please examine my uploaded farm image.'
-    messages = [{"role": "system", "content": SYSTEM_PROMPT + f" The selected interface language is {language}."}, {"role": "user", "content": user_content}]
+    messages = [{"role": "system", "content": SYSTEM_PROMPT + f" The selected interface language is {language}."}]
+    try:
+        history = json.loads(request.data.get('history', '[]'))
+        if not isinstance(history, list):
+            history = []
+        for turn in history[-10:]:
+            role = turn.get('role') if isinstance(turn, dict) else None
+            content = turn.get('content') if isinstance(turn, dict) else None
+            if role in ('user', 'assistant') and isinstance(content, str) and content.strip():
+                messages.append({'role': role, 'content': content[:2500]})
+    except (TypeError, ValueError, json.JSONDecodeError):
+        pass
+    messages.append({"role": "user", "content": user_content})
     if image_file:
         # The project model remains the source of the actual leaf diagnosis. The image is also
         # available to a vision-capable OpenRouter model for general soil/field questions.
