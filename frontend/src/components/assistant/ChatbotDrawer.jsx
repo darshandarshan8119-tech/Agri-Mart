@@ -5,6 +5,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { processFarmerQuery } from '../../utils/aiCopilotService';
 import {
   CommodityPriceCard,
@@ -32,10 +33,15 @@ const QUICK_PROMPTS = [
 
 export default function ChatbotDrawer({ onNavigateFeature }) {
   const { user } = useAuth();
+  const { language, setLanguage } = useLanguage();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [inputVal, setInputVal] = useState('');
   const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState(null);
+  const [listening, setListening] = useState(false);
+  const fileInputRef = useRef(null);
+  const recognitionRef = useRef(null);
   const messagesEndRef = useRef(null);
 
   const [messages, setMessages] = useState([
@@ -65,13 +71,13 @@ export default function ChatbotDrawer({ onNavigateFeature }) {
 
   const handleSend = async (queryText = null) => {
     const textToSend = queryText || inputVal;
-    if (!textToSend.trim() || loading) return;
+    if ((!textToSend.trim() && !image) || loading) return;
 
     const userMessage = {
       id: `user-${Date.now()}`,
       sender: 'user',
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      text: textToSend
+      text: textToSend || `📷 ${image.name}`
     };
 
     setMessages((prev) => [...prev, userMessage]);
@@ -79,8 +85,14 @@ export default function ChatbotDrawer({ onNavigateFeature }) {
     setLoading(true);
 
     try {
-      const response = await processFarmerQuery(textToSend, { name: user?.fullname });
-      
+      // Use the built-in local AI engine — no API key required.
+      // It covers all 10 Agri-MART features: market, disease, recommendation,
+      // yield, growth, comparison, forecast/risk, depth, buyers, and booking.
+      const response = await processFarmerQuery(textToSend, {
+        name: user?.fullname,
+        language
+      });
+
       const assistantMessage = {
         id: `asst-${Date.now()}`,
         sender: 'assistant',
@@ -92,6 +104,7 @@ export default function ChatbotDrawer({ onNavigateFeature }) {
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
+      setImage(null);
     } catch (err) {
       setMessages((prev) => [
         ...prev,
@@ -99,7 +112,7 @@ export default function ChatbotDrawer({ onNavigateFeature }) {
           id: `asst-${Date.now()}`,
           sender: 'assistant',
           time: 'Just now',
-          text: `I encountered an issue processing your request. Please select a quick shortcut below or try again.`,
+          text: `Sorry, I ran into an issue. Please try again or use the feature buttons above.`,
           cardType: null,
           cardData: null,
           actions: [{ label: '🌾 View Market Prices', feature: 'market' }]
@@ -108,6 +121,33 @@ export default function ChatbotDrawer({ onNavigateFeature }) {
     } finally {
       setLoading(false);
     }
+  };
+
+  const startListening = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setMessages((prev) => [...prev, { id: `asst-${Date.now()}`, sender: 'assistant', time: 'Just now', text: 'Voice input is not available in this browser. You can type or use Chrome/Edge on Android.', actions: [] }]);
+      return;
+    }
+    recognitionRef.current?.stop();
+    const recognition = new SpeechRecognition();
+    recognition.lang = { kn: 'kn-IN', hi: 'hi-IN', en: 'en-IN' }[language] || 'en-IN';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognition.onstart = () => setListening(true);
+    recognition.onend = () => setListening(false);
+    recognition.onerror = () => setListening(false);
+    recognition.onresult = (event) => setInputVal(event.results[0][0].transcript);
+    recognitionRef.current = recognition;
+    recognition.start();
+  };
+
+  const speakMessage = (text) => {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = { kn: 'kn-IN', hi: 'hi-IN', en: 'en-IN' }[language] || 'en-IN';
+    window.speechSynthesis.speak(utterance);
   };
 
   const handleActionClick = (action) => {
@@ -249,6 +289,9 @@ export default function ChatbotDrawer({ onNavigateFeature }) {
             <div key={m.id} className={`chat-bubble-wrap ${m.sender === 'user' ? 'from-user' : 'from-asst'}`}>
               <div className="bubble-content">
                 <p className="bubble-text">{m.text}</p>
+                {m.sender === 'assistant' && (
+                  <button type="button" className="btn-speak-message" onClick={() => speakMessage(m.text)} aria-label="Listen to this answer">🔊 Listen</button>
+                )}
                 
                 {/* RENDER FLASH CARD IF PRESENT */}
                 {m.cardType && renderCard(m.cardType, m.cardData)}
@@ -289,6 +332,7 @@ export default function ChatbotDrawer({ onNavigateFeature }) {
         </div>
 
         {/* INPUT BOX */}
+        {image && <div className="copilot-image-status">📷 {image.name}<button type="button" onClick={() => setImage(null)} aria-label="Remove image">×</button></div>}
         <form
           className="copilot-input-bar"
           onSubmit={(e) => {
@@ -303,10 +347,18 @@ export default function ChatbotDrawer({ onNavigateFeature }) {
             onChange={(e) => setInputVal(e.target.value)}
             disabled={loading}
           />
+          <select className="assistant-language" value={language} onChange={(e) => setLanguage(e.target.value)} aria-label="Assistant language" disabled={loading}>
+            <option value="en">EN</option>
+            <option value="hi">हिं</option>
+            <option value="kn">ಕಂ</option>
+          </select>
+          <input ref={fileInputRef} className="assistant-file-input" type="file" accept="image/*" capture="environment" onChange={(e) => setImage(e.target.files?.[0] || null)} />
+          <button type="button" className="btn-input-tool" onClick={() => fileInputRef.current?.click()} disabled={loading} aria-label="Take or attach crop, soil, or field photo">📷</button>
+          <button type="button" className={`btn-input-tool ${listening ? 'is-listening' : ''}`} onClick={startListening} disabled={loading} aria-label="Speak your question">🎙️</button>
           <button 
             type="submit" 
             className="btn-send-message"
-            disabled={!inputVal.trim() || loading}
+            disabled={(!inputVal.trim() && !image) || loading}
             aria-label="Send message"
           >
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">

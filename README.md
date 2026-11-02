@@ -1,3 +1,15 @@
+# Agri-MART
+
+## Voice-first farm assistant setup
+
+The assistant keeps the OpenRouter secret in Django; it is never sent to the browser.
+
+1. In the backend deployment environment, set `OPENROUTER_API_KEY` to the key you provide and optionally set `OPENROUTER_MODEL` to a vision- and tool-calling-capable OpenRouter model. See [backend/.env.example](backend/.env.example) for the variable names.
+2. Start the Django API on port 8000 and the Vite frontend on port 5173 as usual.
+3. Open **Agri-AI Copilot** and choose English, Hindi, or Kannada. Use the microphone for speech input, the camera button for crop/soil/field images, and **Listen** to have answers read aloud.
+
+Image uploads run through the project's disease model when requested; other image questions are sent to the selected vision-capable OpenRouter model. Crop recommendations, yield forecasts, growth status, and market data are available to the model as project tools.
+
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.

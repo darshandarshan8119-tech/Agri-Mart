@@ -37,21 +37,24 @@ export async function processFarmerQuery(queryText, userContext = {}) {
   }
 
   // 1. CROP DISEASE DETECTION INTENT
-  if (query.includes('disease') || query.includes('leaf') || query.includes('infection') || query.includes('pest') || query.includes('blight') || query.includes('rust') || query.includes('scan') || query.includes('yellow leaf') || query.includes('spots')) {
-    const diseaseKey = query.includes('potato') ? 'potato' : query.includes('rice') ? 'rice' : query.includes('corn') ? 'corn' : query.includes('cotton') ? 'cotton' : 'tomato';
-    const disease = sampleDiseases[diseaseKey] || sampleDiseases.tomato;
+  if (query.includes('disease') || query.includes('leaf') || query.includes('infection') || query.includes('pest') || query.includes('blight') || query.includes('rust') || query.includes('scan') || query.includes('yellow leaf') || query.includes('spots') || query.includes('diagnos') || query.includes('cure')) {
+    // Map user keywords to actual diseaseData keys
+    const diseaseKey = (query.includes('rice') || query.includes('paddy')) ? 'healthy_rice'
+      : (query.includes('corn') || query.includes('maize') || query.includes('rust')) ? 'corn_rust'
+      : 'tomato_early_blight';
+    const disease = sampleDiseases[diseaseKey] || sampleDiseases.tomato_early_blight;
 
     return {
-      content: `Namaste ${userName}, I diagnosed plant health symptoms. For **${disease.crop}**, signs indicate **${disease.name}**.\n\nHere is the immediate treatment action card. You can also upload a direct leaf photo using our Disease Scanner.`,
+      content: `Namaste ${userName}, I diagnosed plant health symptoms. For **${disease.crop}**, signs indicate **${disease.disease}**.\n\nHere is the immediate treatment action card. You can also upload a direct leaf photo using our Disease Scanner.`,
       cardType: 'disease',
       cardData: {
         crop: disease.crop,
-        diseaseName: disease.name,
-        confidence: '96.4%',
+        diseaseName: disease.disease,
+        confidence: disease.confidence,
         severity: 'Moderate Infection',
         symptoms: disease.symptoms,
-        organicCure: disease.organicTreatment,
-        chemicalCure: disease.chemicalTreatment,
+        organicCure: disease.treatments[0] || '',
+        chemicalCure: disease.treatments.slice(1).join('; '),
         sampleImg: disease.imgUrl
       },
       actions: [
@@ -66,20 +69,20 @@ export async function processFarmerQuery(queryText, userContext = {}) {
     const preset = query.includes('black') ? 'black' : query.includes('red') ? 'red' : query.includes('sandy') ? 'sandy' : 'alluvial';
     const soilData = soilPresets[preset] || soilPresets.alluvial;
     const recs = calculateCropRecommendation(soilData);
-    const topCrop = recs.recommendations[0];
+    const topCrop = recs.topCrop;
 
     return {
       content: `Based on your soil and agro-climate conditions, **${topCrop.title}** is your #1 prime choice (${topCrop.match} suitability match).\n\nHere is your Soil & Climate Crop Recommendation Flash Card:`,
       cardType: 'recommendation',
       cardData: {
-        soilType: soilData.name,
+        soilType: preset.charAt(0).toUpperCase() + preset.slice(1) + ' Soil',
         npk: `N:${soilData.N} P:${soilData.P} K:${soilData.K} • pH ${soilData.ph}`,
         topCrop: topCrop.title,
         topEmoji: topCrop.emoji,
         match: topCrop.match,
         expectedYield: topCrop.yield,
         desc: topCrop.desc,
-        secondaryCrop: recs.recommendations[1]?.title || 'Gram (Chana)'
+        secondaryCrop: recs.secondCrop?.title || 'Gram (Chana)'
       },
       actions: [
         { label: '🧪 Open Crop Recommendation Tool', feature: 'recommendation' },
@@ -91,18 +94,19 @@ export async function processFarmerQuery(queryText, userContext = {}) {
   // 3. YIELD PREDICTION INTENT (Harvest estimate, tonnage, revenue)
   if (query.includes('yield') || query.includes('harvest') || query.includes('tonnage') || query.includes('how much quintal') || query.includes('revenue') || query.includes('production')) {
     const yieldCalc = calculateYield({ crop: 'wheat', acres: 5, season: 'rabi', irrigation: 'drip', fertilizer: 'balanced' });
+    const totalQuintals = (parseFloat(yieldCalc.totalTonnes) * 10).toFixed(0);
 
     return {
-      content: `Here is the estimated yield and gross revenue projection for **5 acres of Wheat** under optimal drip irrigation.\n\nExpected total harvest is **${yieldCalc.yieldTotal} Quintals** with an estimated revenue of **₹${yieldCalc.revenueEst.toLocaleString()}**.`,
+      content: `Here is the estimated yield and gross revenue projection for **5 acres of Wheat** under optimal drip irrigation.\n\nExpected total harvest is **${totalQuintals} Quintals** with an estimated revenue of **₹${yieldCalc.grossRevenue}**.`,
       cardType: 'yield',
       cardData: {
-        crop: 'Wheat (Rabi Season)',
+        crop: yieldCalc.cropName + ' (Rabi Season)',
         acres: '5 Acres',
         irrigation: 'Drip Irrigation',
-        yieldPerAcre: `${yieldCalc.yieldPerAcre} Qtl/Acre`,
-        totalHarvest: `${yieldCalc.yieldTotal} Quintals`,
-        estimatedRevenue: `₹${yieldCalc.revenueEst.toLocaleString()}`,
-        mspBenchmark: '₹2,275/Qtl'
+        yieldPerAcre: `${yieldCalc.yieldPerAcre} T/Acre`,
+        totalHarvest: `${yieldCalc.totalTonnes} Tonnes`,
+        estimatedRevenue: `₹${yieldCalc.grossRevenue}`,
+        mspBenchmark: `₹${yieldCalc.mspPerQtl}/Qtl`
       },
       actions: [
         { label: '🚜 Open Yield Estimator', feature: 'yield' },
