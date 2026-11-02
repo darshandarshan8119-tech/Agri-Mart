@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useLanguage } from '../../context/LanguageContext';
 
 const BrandSVG = () => (
   <svg viewBox="0 0 24 24" role="img">
@@ -9,10 +10,10 @@ const BrandSVG = () => (
 );
 
 export default function Navbar() {
-  const { isLoggedIn, user, logout } = useAuth();
+  const { isLoggedIn, logout } = useAuth();
+  const { language, toggleLanguage, t } = useLanguage();
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 18);
@@ -21,71 +22,52 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  useEffect(() => {
-    const onResize = () => { if (window.innerWidth > 820) setMenuOpen(false); };
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
-
-  useEffect(() => {
-    document.body.classList.toggle('menu-open', menuOpen);
-  }, [menuOpen]);
-
-  const closeMenu = () => setMenuOpen(false);
-
-  const displayName = user?.fullname || (user?.email ? user.email.split('@')[0] : 'Farmer');
-
   const handleLogout = () => {
     logout();
-    closeMenu();
     navigate('/');
   };
 
   return (
     <header
-      className={`site-header${scrolled ? ' scrolled' : ''}${menuOpen ? ' menu-active' : ''}`}
+      className={`site-header${scrolled ? ' scrolled' : ''}`}
       data-header
     >
       <nav className="navbar" aria-label="Primary navigation">
-        <Link className="brand" to="/" aria-label="Agri-MART home" onClick={closeMenu}>
+        <Link className="brand" to="/" aria-label="Agri-MART home">
           <span className="brand-mark" aria-hidden="true"><BrandSVG /></span>
           <span>Agri-MART</span>
         </Link>
 
-        <button
-          className={`menu-toggle${menuOpen ? ' is-open' : ''}`}
-          type="button"
-          aria-label={menuOpen ? 'Close navigation' : 'Open navigation'}
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((o) => !o)}
-        >
-          <span /><span /><span />
-        </button>
-
-        <div className={`nav-panel${menuOpen ? ' is-open' : ''}`} data-nav-panel>
-          <a href="/#home" onClick={closeMenu}>Home</a>
-          <a href="/#about" onClick={closeMenu}>About</a>
-          <a href="/#features" onClick={closeMenu}>AI Features</a>
-          <a href="/#marketplace" onClick={closeMenu}>Marketplace</a>
-          <a href="/#contact" onClick={closeMenu}>Contact</a>
+        <div className="nav-actions">
+          {/* Language Switcher Button (Desktop & Mobile) */}
+          <button
+            className="nav-lang-btn"
+            type="button"
+            onClick={toggleLanguage}
+            title={language === 'en' ? 'ಕನ್ನಡಕ್ಕೆ ಬದಲಾಯಿಸಿ' : 'Switch to English'}
+            aria-label={language === 'en' ? 'Switch to Kannada' : 'Switch to English'}
+          >
+            <span className="nav-lang-icon" aria-hidden="true">🌐</span>
+            <span className="nav-lang-label">{language === 'en' ? 'ಕನ್ನಡ' : 'English'}</span>
+            <span className="nav-lang-badge">{language.toUpperCase()}</span>
+          </button>
 
           {isLoggedIn ? (
-            <>
-              <Link className="nav-auth" to="/dashboard" onClick={closeMenu}>
-                📊 {displayName} (Dashboard)
-              </Link>
-              <button
-                className="nav-logout-btn"
-                onClick={handleLogout}
-              >
-                Sign Out
-              </button>
-            </>
+            <button
+              className="nav-signin-btn nav-logout-btn"
+              type="button"
+              onClick={handleLogout}
+              title={t('Sign Out')}
+            >
+              {t('Sign Out')}
+            </button>
           ) : (
-            <>
-              <Link className="nav-auth" to="/login" onClick={closeMenu}>Sign In</Link>
-              <Link className="nav-register" to="/login?mode=register" onClick={closeMenu}>Register</Link>
-            </>
+            <Link
+              className="nav-signin-btn"
+              to="/login"
+            >
+              {t('Sign In')}
+            </Link>
           )}
         </div>
       </nav>

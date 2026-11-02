@@ -5,7 +5,7 @@ const featureTitles = {
   recommendation: 'Crop Recommendation',
   yield: 'Yield Prediction',
   growth: 'Plant Growth Monitoring',
-  market: 'Market Price Tracking',
+  market: 'Market Price Analysis & Risk Alert',
 };
 
 const BrandSVG = () => (

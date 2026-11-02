@@ -2,18 +2,26 @@
 venv/
 .venv/
 env/
+**/venv/
+**/.venv/
 
 # Python
 __pycache__/
+**/__pycache__/
 *.py[cod]
+**/*.py[cod]
 *$py.class
 *.sqlite3
+**/*.sqlite3
 
 # Node / Frontend
 node_modules/
+**/node_modules/
 dist/
+**/dist/
 .env
 .env.local
+**/.env*
 
 # IDE
 .vscode/

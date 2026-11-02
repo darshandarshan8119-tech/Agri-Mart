@@ -11,7 +11,8 @@ urlpatterns = [
     path('ai/crop-recommendation/', views.crop_recommendation_view, name='crop_recommendation'),
     path('ai/yield-prediction/', views.yield_prediction_view, name='yield_prediction'),
     path('ai/growth-tracker/', views.growth_tracker_view, name='growth_tracker'),
+    path('ai/assistant/', views.ai_assistant_view, name='ai_assistant'),
 
-    # Market Rates
+    # Market Rates & Risk Analysis
     path('market/prices/', views.market_prices_view, name='market_prices'),
 ]

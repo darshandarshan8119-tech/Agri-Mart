@@ -25,7 +25,7 @@ const navItems = [
     iconPath: 'M11 21v-5.1C7.1 15.4 4 12.1 4 8V5h3c2.5 0 4.7 1.3 6 3.2A7.5 7.5 0 0 1 19.5 5H21v2.5c0 4-3.1 7.4-7 7.9V21h-3Zm-5-14v1c0 2.8 2.2 5.2 5 5.8V13c0-3.3-2.7-6-6-6Zm8 6.4c2.8-.6 5-3 5-5.9V7.1c-2.9.6-5 3.2-5 6.3Z',
   },
   {
-    key: 'market', label: 'Market Price Tracking', sub: 'Live APMC Mandi Rates',
+    key: 'market', label: 'Market Price & Risk Alert', sub: 'APMC Depth & Volatility Advisory',
     iconPath: 'M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z',
   },
 ];

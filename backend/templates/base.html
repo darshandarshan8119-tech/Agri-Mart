@@ -1,0 +1,272 @@
+{% load i18n %}<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:'en' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% translate "Agri-MART | Smart Agriculture Platform" %}{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #ecfdf5;
+            --secondary: #0284c7;
+            --accent: #f59e0b;
+            --dark: #0f172a;
+            --gray-900: #111827;
+            --gray-700: #374151;
+            --gray-500: #6b7280;
+            --gray-200: #e5e7eb;
+            --gray-50: #f9fafb;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #f8fafc 50%, #eff6ff 100%);
+            color: var(--gray-900);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(229, 231, 235, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0.85rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            text-decoration: none;
+            color: var(--gray-900);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1.35rem;
+        }
+
+        .brand-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.35);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--gray-700);
+            font-weight: 500;
+            font-size: 0.92rem;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        /* Language Switcher Styling */
+        .lang-switch-form {
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .lang-select-wrapper {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            background: #ffffff;
+            border: 1.5px solid #10b981;
+            border-radius: 9999px;
+            padding: 0.35rem 0.85rem 0.35rem 0.65rem;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        .lang-select-wrapper:hover, .lang-select-wrapper:focus-within {
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.18);
+            border-color: var(--primary-dark);
+        }
+
+        .lang-icon {
+            font-size: 1rem;
+            margin-right: 0.4rem;
+            user-select: none;
+        }
+
+        .lang-select {
+            appearance: none;
+            -webkit-appearance: none;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--gray-900);
+            cursor: pointer;
+            padding-right: 1.1rem;
+        }
+
+        .lang-select-wrapper::after {
+            content: '▾';
+            position: absolute;
+            right: 0.7rem;
+            font-size: 0.75rem;
+            color: var(--primary-dark);
+            pointer-events: none;
+        }
+
+        .active-lang-badge {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.55rem;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            font-weight: 700;
+            border-radius: 6px;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            text-transform: uppercase;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        footer {
+            background: #ffffff;
+            border-top: 1px solid var(--gray-200);
+            padding: 2.5rem 1.5rem;
+            margin-top: 3rem;
+            text-align: center;
+            color: var(--gray-500);
+            font-size: 0.88rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .footer-tagline {
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .header-container {
+                padding: 0.75rem 1rem;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="{% url 'home' %}" class="brand-link">
+                <span class="brand-icon">🌱</span>
+                <span>Agri-MART</span>
+            </a>
+
+            <ul class="nav-links">
+                <li><a href="{% url 'home' %}">{% translate "Home" %}</a></li>
+                <li><a href="#features">{% translate "AI Features" %}</a></li>
+                <li><a href="#market">{% translate "Marketplace" %}</a></li>
+                <li><a href="#about">{% translate "About Us" %}</a></li>
+                <li><a href="#contact">{% translate "Contact" %}</a></li>
+            </ul>
+
+            <div class="header-actions">
+                {% get_current_language as CURRENT_LANGUAGE %}
+                <span class="active-lang-badge" title="Active Language">{{ CURRENT_LANGUAGE }}</span>
+
+                <!-- Language Selector Form (Django set_language) -->
+                <form action="{% url 'set_language' %}" method="post" class="lang-switch-form" id="language-form">
+                    {% csrf_token %}
+                    <input name="next" type="hidden" value="{{ request.get_full_path }}">
+                    <div class="lang-select-wrapper">
+                        <span class="lang-icon">🌐</span>
+                        <select name="language" onchange="this.form.submit()" class="lang-select" id="language-select" aria-label="{% translate 'Select Language' %}">
+                            {% get_available_languages as AVAILABLE_LANGUAGES %}
+                            {% get_language_info_list for AVAILABLE_LANGUAGES as languages %}
+                            {% for lang in languages %}
+                                <option value="{{ lang.code }}"{% if lang.code == CURRENT_LANGUAGE %} selected{% endif %}>
+                                    {{ lang.name_local }} ({{ lang.code }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-tagline">
+                🌱 <strong>Agri-MART</strong> — {% translate "Empowering Indian Agriculture with Artificial Intelligence" %}
+            </div>
+            <div>
+                &copy; 2026 Agri-MART. {% translate "All rights reserved." %}
+            </div>
+        </div>
+    </footer>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

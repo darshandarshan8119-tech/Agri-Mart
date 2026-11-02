@@ -1,0 +1,372 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% translate "Agri-MART | Smart Agriculture Platform" %}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        max-width: 1200px;
+        margin: 2.5rem auto 3rem;
+        padding: 0 1.5rem;
+        text-align: center;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #ecfdf5;
+        color: #065f46;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        padding: 0.4rem 1rem;
+        border-radius: 9999px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+    }
+
+    .hero-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 3rem;
+        font-weight: 700;
+        line-height: 1.18;
+        color: #0f172a;
+        margin-bottom: 1.25rem;
+        letter-spacing: -0.02em;
+    }
+
+    .hero-title span {
+        background: linear-gradient(135deg, #10b981 0%, #0284c7 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+        max-width: 720px;
+        margin: 0 auto 2.25rem;
+        font-size: 1.15rem;
+        line-height: 1.6;
+        color: #4b5563;
+    }
+
+    .hero-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.8rem 1.6rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        border: none;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(16, 185, 129, 0.45);
+    }
+
+    .btn-secondary {
+        background: white;
+        color: #374151;
+        border: 1px solid #d1d5db;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    }
+
+    .btn-secondary:hover {
+        background: #f9fafb;
+        border-color: #9ca3af;
+        transform: translateY(-2px);
+    }
+
+    /* Features Section */
+    .section-container {
+        max-width: 1200px;
+        margin: 0 auto 4rem;
+        padding: 0 1.5rem;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 2.75rem;
+    }
+
+    .section-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.1rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 0.75rem;
+    }
+
+    .section-subtitle {
+        color: #6b7280;
+        font-size: 1.02rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .feature-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.75rem;
+        border: 1px solid #e5e7eb;
+        box-shadow: var(--shadow-sm);
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+        border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    .card-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .icon-green { background: #dcfce7; color: #15803d; }
+    .icon-blue { background: #e0f2fe; color: #0369a1; }
+    .icon-amber { background: #fef3c7; color: #b45309; }
+    .icon-purple { background: #f3e8ff; color: #7e22ce; }
+
+    .card-tag {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-weight: 700;
+        color: #10b981;
+        margin-bottom: 0.4rem;
+    }
+
+    .card-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 0.6rem;
+    }
+
+    .card-desc {
+        color: #6b7280;
+        font-size: 0.92rem;
+        line-height: 1.55;
+        flex: 1;
+        margin-bottom: 1.25rem;
+    }
+
+    .card-link {
+        font-weight: 600;
+        font-size: 0.88rem;
+        color: #059669;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .card-link:hover {
+        text-decoration: underline;
+    }
+
+    /* Language Banner */
+    .lang-banner {
+        max-width: 1200px;
+        margin: 0 auto 3rem;
+        padding: 0 1.5rem;
+    }
+
+    .lang-banner-inner {
+        background: linear-gradient(135deg, #064e3b 0%, #065f46 100%);
+        color: white;
+        border-radius: 16px;
+        padding: 2rem 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        box-shadow: 0 10px 25px -5px rgba(6, 78, 59, 0.3);
+    }
+
+    .lang-banner-text h3 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 0.35rem;
+    }
+
+    .lang-banner-text p {
+        opacity: 0.9;
+        font-size: 0.95rem;
+    }
+
+    /* Stats Section */
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-top: 3rem;
+        background: white;
+        padding: 2rem;
+        border-radius: 16px;
+        border: 1px solid #e5e7eb;
+        text-align: center;
+    }
+
+    .stat-number {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #10b981;
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+        color: #6b7280;
+        font-weight: 500;
+        margin-top: 0.25rem;
+    }
+
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero-section" id="home">
+    <div class="hero-badge">
+        <span>✨</span>
+        <span>{% translate "Welcome to Agri-MART" %}</span>
+    </div>
+
+    <h1 class="hero-title">
+        {% translate "Smart Agriculture Powered by AI" %}
+    </h1>
+
+    <p class="hero-subtitle">
+        {% translate "Empowering farmers with intelligent crop recommendations, instant disease diagnostics, and real-time mandi prices." %}
+    </p>
+
+    <div class="hero-actions">
+        <a href="#features" class="btn btn-primary">
+            <span>🚀</span>
+            <span>{% translate "Explore AI Features" %}</span>
+        </a>
+        <a href="#market" class="btn btn-secondary">
+            <span>📈</span>
+            <span>{% translate "Check Market Rates" %}</span>
+        </a>
+    </div>
+</section>
+
+<!-- Language Switcher Banner -->
+<section class="lang-banner">
+    <div class="lang-banner-inner">
+        <div class="lang-banner-text">
+            <h3>{% translate "Looking for another language?" %}</h3>
+            <p>{% translate "Switch between English and Kannada anytime using the language selector in the top bar." %}</p>
+        </div>
+        <div>
+            <span style="font-size: 2rem;">🌐 ಕನ್ನಡ &bull; English</span>
+        </div>
+    </div>
+</section>
+
+<!-- Features Grid -->
+<section class="section-container" id="features">
+    <div class="section-header">
+        <h2 class="section-title">{% translate "Our Intelligent Farming Tools" %}</h2>
+        <p class="section-subtitle">{% translate "Harness the power of machine learning designed specifically for Indian agriculture." %}</p>
+    </div>
+
+    <div class="cards-grid">
+        <div class="feature-card">
+            <div class="card-icon icon-green">🌾</div>
+            <div class="card-tag">{% translate "Soil Analysis" %}</div>
+            <h3 class="card-title">{% translate "Crop Recommendation" %}</h3>
+            <p class="card-desc">{% translate "Get personalized crop recommendations based on soil NPK levels, pH, and climate conditions." %}</p>
+            <a href="#" class="card-link">{% translate "Learn More" %} &rarr;</a>
+        </div>
+
+        <div class="feature-card">
+            <div class="card-icon icon-amber">🔬</div>
+            <div class="card-tag">{% translate "Computer Vision" %}</div>
+            <h3 class="card-title">{% translate "Disease Detection" %}</h3>
+            <p class="card-desc">{% translate "Upload a photo of damaged plant leaves for instant AI identification and organic remedies." %}</p>
+            <a href="#" class="card-link">{% translate "Learn More" %} &rarr;</a>
+        </div>
+
+        <div class="feature-card">
+            <div class="card-icon icon-blue">📊</div>
+            <div class="card-tag">{% translate "Harvest Forecasting" %}</div>
+            <h3 class="card-title">{% translate "Yield Prediction" %}</h3>
+            <p class="card-desc">{% translate "Accurately predict harvest yield in quintals based on crop variety, acreage, and irrigation." %}</p>
+            <a href="#" class="card-link">{% translate "Learn More" %} &rarr;</a>
+        </div>
+
+        <div class="feature-card" id="market">
+            <div class="card-icon icon-purple">🏷️</div>
+            <div class="card-tag">{% translate "Market Intelligence" %}</div>
+            <h3 class="card-title">{% translate "Live Mandi Rates" %}</h3>
+            <p class="card-desc">{% translate "Track real-time commodity prices across agricultural produce markets and APMC mandis." %}</p>
+            <a href="#" class="card-link">{% translate "Learn More" %} &rarr;</a>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-container">
+        <div>
+            <div class="stat-number">10,000+</div>
+            <div class="stat-label">{% translate "Active Farmers" %}</div>
+        </div>
+        <div>
+            <div class="stat-number">38+</div>
+            <div class="stat-label">{% translate "Diseases Diagnosed" %}</div>
+        </div>
+        <div>
+            <div class="stat-number">98.5%</div>
+            <div class="stat-label">{% translate "Accuracy Rate" %}</div>
+        </div>
+        <div>
+            <div class="stat-number">2</div>
+            <div class="stat-label">{% translate "Supported Languages" %} (English / ಕನ್ನಡ)</div>
+        </div>
+    </div>
+</section>
+{% endblock %}

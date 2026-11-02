@@ -195,6 +195,110 @@ svg {
   transform: translateY(-7px) rotate(-45deg);
 }
 
+/* Nav Actions Container */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+/* Language Switcher Button */
+.nav-lang-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1.5px solid rgba(255, 255, 255, 0.38);
+  border-radius: 999px;
+  padding: 6px 14px;
+  cursor: pointer;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.88rem;
+  font-family: inherit;
+  backdrop-filter: blur(8px);
+  transition: all 200ms ease;
+}
+
+.site-header.scrolled .nav-lang-btn,
+.site-header.menu-active .nav-lang-btn {
+  background: #f0fdf4;
+  border-color: var(--leaf);
+  color: var(--green-900);
+}
+
+.nav-lang-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+.site-header.scrolled .nav-lang-btn:hover,
+.site-header.menu-active .nav-lang-btn:hover {
+  background: #dcfce7;
+  border-color: var(--green-700);
+}
+
+.nav-lang-icon {
+  font-size: 1rem;
+}
+
+.nav-lang-label {
+  letter-spacing: 0.01em;
+}
+
+.nav-lang-badge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  background: var(--leaf);
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 6px;
+  line-height: 1;
+}
+
+.site-header.scrolled .nav-lang-badge,
+.site-header.menu-active .nav-lang-badge {
+  background: var(--green-700);
+}
+
+/* Nav Sign In Button */
+.nav-signin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--green-700);
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 0.88rem;
+  font-family: inherit;
+  padding: 8px 22px;
+  border-radius: 999px;
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(6, 78, 59, 0.22);
+  transition: all 200ms ease;
+}
+
+.nav-signin-btn:hover {
+  background: var(--green-800);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(6, 78, 59, 0.32);
+}
+
+.site-header.scrolled .nav-signin-btn {
+  background: var(--green-700);
+  color: #ffffff !important;
+}
+
+.site-header.scrolled .nav-signin-btn:hover {
+  background: var(--green-800);
+}
+
 .hero {
   position: relative;
   min-height: 100vh;
@@ -1577,6 +1681,26 @@ svg {
 @media (max-width: 620px) {
   .navbar {
     width: min(100% - 28px, 1240px);
+    gap: 12px;
+  }
+
+  .nav-actions {
+    gap: 8px;
+  }
+
+  .nav-lang-btn {
+    padding: 5px 10px;
+    font-size: 0.82rem;
+  }
+
+  .nav-lang-label {
+    display: none;
+  }
+
+  .nav-signin-btn,
+  .nav-logout-btn {
+    padding: 6px 14px;
+    font-size: 0.82rem;
   }
 
   .brand {

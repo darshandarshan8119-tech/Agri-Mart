@@ -1,0 +1,127 @@
+# Translation of Agri-MART into Kannada (kn)
+# Copyright (C) 2026 Agri-MART Team
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Agri-MART 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-20 12:00+0530\n"
+"PO-Revision-Date: 2026-09-20 12:00+0530\n"
+"Last-Translator: Agri-MART Team\n"
+"Language-Team: Kannada <kn@li.org>\n"
+"Language: kn\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "English"
+msgstr "ಇಂಗ್ಲಿಷ್"
+
+msgid "Kannada"
+msgstr "ಕನ್ನಡ"
+
+msgid "Select Language"
+msgstr "ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
+
+msgid "Agri-MART | Smart Agriculture Platform"
+msgstr "ಅಗ್ರಿ-ಮಾರ್ಟ್ | ಸ್ಮಾರ್ಟ್ ಕೃಷಿ ವೇದಿಕೆ"
+
+msgid "Home"
+msgstr "ಮುಖಪುಟ"
+
+msgid "AI Features"
+msgstr "ಎಐ ವೈಶಿಷ್ಟ್ಯಗಳು"
+
+msgid "Marketplace"
+msgstr "ಮಾರುಕಟ್ಟೆ"
+
+msgid "About Us"
+msgstr "ನಮ್ಮ ಬಗ್ಗೆ"
+
+msgid "Contact"
+msgstr "ಸಂಪರ್ಕಿಸಿ"
+
+msgid "Empowering Indian Agriculture with Artificial Intelligence"
+msgstr "ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆಯೊಂದಿಗೆ ಭಾರತೀಯ ಕೃಷಿಯನ್ನು ಸಬಲೀಕರಣಗೊಳಿಸುವುದು"
+
+msgid "All rights reserved."
+msgstr "ಎಲ್ಲ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ."
+
+msgid "Welcome to Agri-MART"
+msgstr "ಅಗ್ರಿ-ಮಾರ್ಟ್‌ಗೆ ಸ್ವಾಗತ"
+
+msgid "Smart Agriculture Powered by AI"
+msgstr "ಎಐ ಆಧಾರಿತ ಸ್ಮಾರ್ಟ್ ಕೃಷಿ"
+
+msgid "Empowering farmers with intelligent crop recommendations, instant disease diagnostics, and real-time mandi prices."
+msgstr "ಬುದ್ಧಿವಂತ ಬೆಳೆ ಶಿಫಾರಸುಗಳು, ತ್ವರಿತ ರೋಗ ಪತ್ತೆ ಮತ್ತು ನೈಜ ಸಮಯದ ಮಾರುಕಟ್ಟೆ ದರಗಳೊಂದಿಗೆ ರೈತರನ್ನು ಸಬಲೀಕರಣಗೊಳಿಸುವುದು."
+
+msgid "Explore AI Features"
+msgstr "ಎಐ ವೈಶಿಷ್ಟ್ಯಗಳನ್ನು ಅನ್ವೇಷಿಸಿ"
+
+msgid "Check Market Rates"
+msgstr "ಮಾರುಕಟ್ಟೆ ದರಗಳನ್ನು ಪರಿಶೀಲಿಸಿ"
+
+msgid "Looking for another language?"
+msgstr "ಬೇರೆ ಭಾಷೆಯನ್ನು ಹುಡುಕುತ್ತಿದ್ದೀರಾ?"
+
+msgid "Switch between English and Kannada anytime using the language selector in the top bar."
+msgstr "ಮೇಲಿನ ಬಾರ್‌ನಲ್ಲಿರುವ ಭಾಷಾ ಆಯ್ಕೆಗಾರವನ್ನು ಬಳಸಿಕೊಂಡು ಯಾವುದೇ ಸಮಯದಲ್ಲಿ ಇಂಗ್ಲಿಷ್ ಮತ್ತು ಕನ್ನಡದ ನಡುವೆ ಬದಲಾಯಿಸಿ."
+
+msgid "Our Intelligent Farming Tools"
+msgstr "ನಮ್ಮ ಬುದ್ಧಿವಂತ ಕೃಷಿ ಪರಿಕರಗಳು"
+
+msgid "Harness the power of machine learning designed specifically for Indian agriculture."
+msgstr "ಭಾರತೀಯ ಕೃಷಿಗಾಗಿ ವಿಶೇಷವಾಗಿ ವಿನ್ಯಾಸಗೊಳಿಸಲಾದ ಯಂತ್ರ ಕಲಿಕೆಯ ಶಕ್ತಿಯನ್ನು ಬಳಸಿಕೊಳ್ಳಿ."
+
+msgid "Soil Analysis"
+msgstr "ಮಣ್ಣಿನ ವಿಶ್ಲೇಷಣೆ"
+
+msgid "Crop Recommendation"
+msgstr "ಬೆಳೆ ಶಿಫಾರಸು"
+
+msgid "Get personalized crop recommendations based on soil NPK levels, pH, and climate conditions."
+msgstr "ಮಣ್ಣಿನ NPK ಮಟ್ಟಗಳು, pH ಮತ್ತು ಹವಾಮಾನ ಪರಿಸ್ಥಿತಿಗಳ ಆಧಾರದ ಮೇಲೆ ವೈಯಕ್ತಿಕಗೊಳಿಸಿದ ಬೆಳೆ ಶಿಫಾರಸುಗಳನ್ನು ಪಡೆಯಿರಿ."
+
+msgid "Computer Vision"
+msgstr "ಕಂಪ್ಯೂಟರ್ ದೃಷ್ಟಿ"
+
+msgid "Disease Detection"
+msgstr "ರೋಗ ಪತ್ತೆ"
+
+msgid "Upload a photo of damaged plant leaves for instant AI identification and organic remedies."
+msgstr "ತ್ವರಿತ ಎಐ ಗುರುತಿಸುವಿಕೆ ಮತ್ತು ಸಾವಯವ ಪರಿಹಾರಗಳಿಗಾಗಿ ಹಾನಿಗೊಳಗಾದ ಸಸ್ಯದ ಎಲೆಗಳ ಫೋಟೋವನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ."
+
+msgid "Harvest Forecasting"
+msgstr "ಸುಗ್ಗಿ ಮುನ್ಸೂಚನೆ"
+
+msgid "Yield Prediction"
+msgstr "ಇಳುವರಿ ಮುನ್ಸೂಚನೆ"
+
+msgid "Accurately predict harvest yield in quintals based on crop variety, acreage, and irrigation."
+msgstr "ಬೆಳೆ ತಳಿ, ವಿಸ್ತೀರ್ಣ ಮತ್ತು ನೀರಾವರಿ ಆಧಾರದ ಮೇಲೆ ಕ್ವಿಂಟಾಲ್‌ಗಳಲ್ಲಿ ಸುಗ್ಗಿಯ ಇಳುವರಿಯನ್ನು ನಿಖರವಾಗಿ ಊಹಿಸಿ."
+
+msgid "Market Intelligence"
+msgstr "ಮಾರುಕಟ್ಟೆ ಮಾಹಿತಿ"
+
+msgid "Live Mandi Rates"
+msgstr "ನೇರ ಮಂಡಿ ದರಗಳು"
+
+msgid "Track real-time commodity prices across agricultural produce markets and APMC mandis."
+msgstr "ಕೃಷಿ ಉತ್ಪನ್ನ ಮಾರುಕಟ್ಟೆಗಳು ಮತ್ತು ಎಪಿಎಂಸಿ ಮಂಡಿಗಳಲ್ಲಿ ನೈಜ-ಸಮಯದ ಸರಕು ಬೆಲೆಗಳನ್ನು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ."
+
+msgid "Learn More"
+msgstr "ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ"
+
+msgid "Active Farmers"
+msgstr "ಸಕ್ರಿಯ ರೈತರು"
+
+msgid "Diseases Diagnosed"
+msgstr "ರೋಗಗಳ ತಪಾಸಣೆ"
+
+msgid "Accuracy Rate"
+msgstr "ನಿಖರತೆಯ ದರ"
+
+msgid "Supported Languages"
+msgstr "ಬೆಂಬಲಿತ ಭಾಷೆಗಳು"
