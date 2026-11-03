@@ -68,9 +68,9 @@ const benefits = [
   },
   {
     tag: 'FORECASTING',
-    title: 'Expected Yield Estimation',
-    desc: 'Calibrated acreage harvest regressors predicting gross tonnage, MSP market value, and revenue returns.',
-    metric: 'Acreage Regressor',
+    title: 'Market Risk & Price Radar',
+    desc: 'Algorithmic 7-day price trajectory and holding cost models advising strategic hold vs. liquidate actions.',
+    metric: 'Risk & Depth Terminal',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10"/>

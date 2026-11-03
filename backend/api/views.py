@@ -15,7 +15,6 @@ from rest_framework import status
 
 from .ml.disease_loader import disease_handler
 from .ml.recommendation_loader import rec_handler
-from .ml.yield_loader import yield_handler
 
 def home_template_view(request):
     """
@@ -93,37 +92,6 @@ def crop_recommendation_view(request):
 
     res = rec_handler.predict(N, P, K, ph, rainfall, temp, humidity)
     return Response(res)
-
-
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def yield_prediction_view(request):
-    data = request.data
-    crop = data.get('crop', 'rice')
-    acres = float(data.get('acres', 5))
-    irrigation = data.get('irrigation', 'drip')
-    fertilizer = data.get('fertilizer', 'balanced')
-
-    res = yield_handler.predict(crop, acres, irrigation, fertilizer)
-    return Response(res)
-
-
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def growth_tracker_view(request):
-    return Response({
-        "current_batch": "Wheat Field #3 (Planted 48 Days Ago)",
-        "active_phase": "Phase 3: Tillering & Stem Extension",
-        "ndvi_score": 0.78,
-        "ndvi_rating": "Vibrant Green Canopy (Healthy)",
-        "steps": [
-            { "num": 1, "label": "Germination", "dates": "Days 1 - 10", "status": "completed" },
-            { "num": 2, "label": "Seedling Emergence", "dates": "Days 11 - 28", "status": "completed" },
-            { "num": 3, "label": "Tillering & Stemming", "dates": "Days 29 - 60 (Active - 80%)", "status": "current" },
-            { "num": 4, "label": "Booting & Flowering", "dates": "Days 61 - 85 (Upcoming)", "status": "pending" },
-            { "num": 5, "label": "Grain Filling & Ripening", "dates": "Days 86 - 120 (Harvest)", "status": "pending" }
-        ]
-    })
 
 
 # Comprehensive Market Price Analysis & Risk Alert Endpoint
@@ -218,8 +186,6 @@ def market_prices_view(request):
 ASSISTANT_TOOLS = [
     {"type": "function", "function": {"name": "get_market_prices", "description": "Get the Agri-MART market prices and sell/hold advice currently available in the project.", "parameters": {"type": "object", "properties": {}}}},
     {"type": "function", "function": {"name": "recommend_crop", "description": "Run the project's crop recommendation model. Ask for missing values before calling; use defaults only when the farmer accepts them.", "parameters": {"type": "object", "properties": {"N": {"type": "number"}, "P": {"type": "number"}, "K": {"type": "number"}, "ph": {"type": "number"}, "rainfall": {"type": "number"}, "temp": {"type": "number"}, "humidity": {"type": "number"}}, "required": ["N", "P", "K", "ph", "rainfall", "temp", "humidity"]}}},
-    {"type": "function", "function": {"name": "estimate_yield", "description": "Run the project's yield estimator.", "parameters": {"type": "object", "properties": {"crop": {"type": "string"}, "acres": {"type": "number"}, "irrigation": {"type": "string", "enum": ["drip", "sprinkler", "canal", "rainfed"]}, "fertilizer": {"type": "string", "enum": ["balanced", "chemical", "pure_organic"]}}, "required": ["crop", "acres", "irrigation", "fertilizer"]}}},
-    {"type": "function", "function": {"name": "get_growth_status", "description": "Get the project's active crop growth monitoring status.", "parameters": {"type": "object", "properties": {}}}},
     {"type": "function", "function": {"name": "diagnose_uploaded_leaf", "description": "Return the result from the project's disease model for the image the farmer uploaded. Call only when an image is available.", "parameters": {"type": "object", "properties": {}}}},
 ]
 
@@ -227,7 +193,7 @@ SYSTEM_PROMPT = """You are Agri-MART's warm, intelligent farming companion for I
 
 For a broad question such as "crop disease" or "my plant is sick", do NOT name a disease. Respond naturally, acknowledge the concern, and ask for either a clear photo plus the crop name or one useful symptom (spots, yellowing, curling, wilting, insects). Use diagnose_uploaded_leaf only after a photo is available. Make it clear that the result is advisory and a local agricultural officer should be contacted for severe outbreaks.
 
-Use project tools only when they add a fact: current market data, provided soil readings, yield inputs, growth status, or an uploaded leaf image. Never invent prices, diagnoses, or model results. If inputs for a tool are missing, ask one short, friendly follow-up question rather than guessing. Explain recommendations in simple everyday terms, and for pesticide advice remind the farmer to follow the label and local regulations. Your job is to help the farmer think through their situation, not just display cards."""
+Use project tools only when they add a fact: current market data, provided soil readings, or an uploaded leaf image. Never invent prices, diagnoses, or model results. If inputs for a tool are missing, ask one short, friendly follow-up question rather than guessing. Explain recommendations in simple everyday terms, and for pesticide advice remind the farmer to follow the label and local regulations. Your job is to help the farmer think through their situation, not just display cards."""
 
 
 def _openrouter_completion(messages, tools=None):
@@ -257,12 +223,6 @@ def _tool_result(name, args, image_file=None):
         result = rec_handler.predict(**{key: float(args[key]) for key in ('N', 'P', 'K', 'ph', 'rainfall', 'temp', 'humidity')})
         top = result['topCrop']
         return result, 'recommendation', {"soilType": "Farmer-provided soil readings", "npk": f"N:{args['N']} P:{args['P']} K:{args['K']} • pH {args['ph']}", "topCrop": top['title'], "topEmoji": top['emoji'], "match": top['match'], "expectedYield": top.get('yield', 'Varies'), "desc": top['desc'], "secondaryCrop": (result.get('secondCrop') or {}).get('title', '—')}
-    if name == 'estimate_yield':
-        result = yield_handler.predict(args['crop'].lower(), float(args['acres']), args['irrigation'], args['fertilizer'])
-        return result, 'yield', {"crop": result['cropName'], "acres": f"{args['acres']} Acres", "irrigation": args['irrigation'].title(), "yieldPerAcre": f"{result['yieldPerAcre']} T/Acre", "totalHarvest": f"{result['totalTonnes']} Tonnes", "estimatedRevenue": f"₹{result['grossRevenue']}", "mspBenchmark": f"₹{result['mspPerQtl']}/Qtl"}
-    if name == 'get_growth_status':
-        result = {"current_batch": "Wheat Field #3 (Planted 48 Days Ago)", "active_phase": "Phase 3: Tillering & Stem Extension", "ndvi_score": 0.78, "ndvi_rating": "Vibrant Green Canopy (Healthy)"}
-        return result, 'growth', {"cropBatch": result['current_batch'], "currentStage": result['active_phase'], "progressPct": 80, "ndviScore": str(result['ndvi_score']), "ndviStatus": result['ndvi_rating'], "nextWatering": "In 3 Days", "nextAction": "First top-dressing nitrogen application"}
     if name == 'diagnose_uploaded_leaf' and image_file:
         result = disease_handler.predict(image_file)
         if result.get('error'):

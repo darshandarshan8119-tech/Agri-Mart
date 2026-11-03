@@ -8,7 +8,7 @@ export default function AuthShowcase() {
 
       <h1 className="auth-showcase-title">Empowering farmers with AI-driven harvest precision.</h1>
       <p className="auth-showcase-desc">
-        Access real-time crop disease detection, soil-tailored crop suggestions, yield predictions, and seamless market access.
+        Access real-time crop disease detection, soil-tailored crop suggestions, market price intelligence, and risk alerts.
       </p>
 
       <div className="auth-feature-list">

@@ -16,7 +16,7 @@ export default function Hero() {
           <p className="eyebrow">{t('AI-powered farming intelligence')}</p>
           <h1>{t('Smart Farming. Better Decisions. Better Harvests.')}</h1>
           <p className="hero-text">
-            {t('Agri-MART uses Artificial Intelligence and Machine Learning to help farmers understand crops, detect disease, choose suitable crops, estimate yields, and monitor plant growth with confidence.')}
+            {t('Agri-MART uses Artificial Intelligence and Machine Learning to help farmers understand crops, detect disease, choose suitable crops, and analyze market price risks with confidence.')}
           </p>
           <div className="hero-actions">
             <Link className="btn btn-primary" to="/login?mode=register">{t('Get Started')}</Link>

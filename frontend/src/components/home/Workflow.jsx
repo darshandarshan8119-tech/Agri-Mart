@@ -43,7 +43,7 @@ const steps = [
     num: '04',
     tag: 'Actionable Harvest',
     title: 'Get Real-Time Insights',
-    desc: 'Receive tailored treatment plans, optimal fertilizer dosages, yield forecasts, and fair marketplace prices.',
+    desc: 'Receive tailored treatment plans, optimal fertilizer dosages, market risk advisories, and fair mandi prices.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>

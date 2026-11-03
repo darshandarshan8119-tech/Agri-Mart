@@ -7,7 +7,7 @@ export default function About() {
           <h2>One platform for clearer agricultural decisions.</h2>
           <p>
             Agri-MART is an AI-powered agricultural platform designed to help farmers understand their crops,
-            detect diseases, choose suitable crops, estimate yields, and monitor plant growth.
+            detect diseases, choose suitable crops, and analyze market price risks.
           </p>
           <p>
             The experience is simple by design: provide crop images or field information, then receive practical

@@ -15,9 +15,7 @@ import {
   BuyerCard,
   BookingCard,
   DiseaseScanCard,
-  CropRecommendationCard,
-  YieldPredictionCard,
-  GrowthMonitoringCard
+  CropRecommendationCard
 } from './AssistantCards';
 import './ChatbotDrawer.css';
 
@@ -27,7 +25,6 @@ const QUICK_PROMPTS = [
   { label: '📊 5-Level Market Depth', query: 'Show 5-level order book depth and spread for Mustard' },
   { label: '🔬 Check Leaf Disease', query: 'How to diagnose and cure leaf blight disease?' },
   { label: '🌱 Recommend Crop for Soil', query: 'What is the best crop for alluvial soil with high nitrogen?' },
-  { label: '🚜 Estimate Yield', query: 'Estimate harvest yield and gross revenue for 5 acres of wheat' },
   { label: '📅 Book Delivery Gate', query: 'Book a weighbridge arrival slot at Ludhiana APMC' }
 ];
 
@@ -202,10 +199,6 @@ export default function ChatbotDrawer({ onNavigateFeature }) {
         return <DiseaseScanCard data={data} onAction={handleActionClick} />;
       case 'recommendation':
         return <CropRecommendationCard data={data} onAction={handleActionClick} />;
-      case 'yield':
-        return <YieldPredictionCard data={data} onAction={handleActionClick} />;
-      case 'growth':
-        return <GrowthMonitoringCard data={data} onAction={handleActionClick} />;
       default:
         return null;
     }

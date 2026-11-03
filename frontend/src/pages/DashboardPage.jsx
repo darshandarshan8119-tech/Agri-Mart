@@ -4,11 +4,9 @@ import Sidebar from '../components/dashboard/Sidebar';
 import Topbar from '../components/dashboard/Topbar';
 import DiseaseDetection from '../components/dashboard/features/DiseaseDetection';
 import CropRecommendation from '../components/dashboard/features/CropRecommendation';
-import YieldPrediction from '../components/dashboard/features/YieldPrediction';
-import GrowthMonitoring from '../components/dashboard/features/GrowthMonitoring';
 import MarketPrices from '../components/dashboard/features/MarketPrices';
 
-const VALID_TABS = ['disease', 'recommendation', 'yield', 'growth', 'market'];
+const VALID_TABS = ['disease', 'recommendation', 'market'];
 
 export default function DashboardPage() {
   const location = useLocation();
@@ -61,8 +59,6 @@ export default function DashboardPage() {
           <main className="dash-view-content">
             {activeFeature === 'disease' && <DiseaseDetection />}
             {activeFeature === 'recommendation' && <CropRecommendation />}
-            {activeFeature === 'yield' && <YieldPrediction />}
-            {activeFeature === 'growth' && <GrowthMonitoring />}
             {activeFeature === 'market' && <MarketPrices />}
           </main>
         </div>

@@ -16,19 +16,18 @@ const translations = {
     // Hero
     'AI-powered farming intelligence': 'AI-powered farming intelligence',
     'Smart Farming. Better Decisions. Better Harvests.': 'Smart Farming. Better Decisions. Better Harvests.',
-    'Agri-MART uses Artificial Intelligence and Machine Learning to help farmers understand crops, detect disease, choose suitable crops, estimate yields, and monitor plant growth with confidence.': 'Agri-MART uses Artificial Intelligence and Machine Learning to help farmers understand crops, detect disease, choose suitable crops, estimate yields, and monitor plant growth with confidence.',
+    'Agri-MART uses Artificial Intelligence and Machine Learning to help farmers understand crops, detect disease, choose suitable crops, and analyze market price risks with confidence.': 'Agri-MART uses Artificial Intelligence and Machine Learning to help farmers understand crops, detect disease, choose suitable crops, and analyze market price risks with confidence.',
     'Get Started': 'Get Started',
     'Explore Features': 'Explore Features',
 
     // Features
     'Crop Recommendation': 'Crop Recommendation',
     'Disease Detection': 'Disease Detection',
-    'Yield Prediction': 'Yield Prediction',
-    'Growth Monitoring': 'Growth Monitoring',
+    'Market Price & Risk Alert': 'Market Price & Risk Alert',
     'Market Prices': 'Market Prices',
     'Soil Analysis': 'Soil Analysis',
     'Computer Vision': 'Computer Vision',
-    'Harvest Forecasting': 'Harvest Forecasting',
+    'Price Risk Forecasting': 'Price Risk Forecasting',
     'Learn More': 'Learn More',
 
     // Footer & Common
@@ -51,19 +50,18 @@ const translations = {
     // Hero
     'AI-powered farming intelligence': 'ಎಐ ಆಧಾರಿತ ಸ್ಮಾರ್ಟ್ ಕೃಷಿ ಜ್ಞಾನ',
     'Smart Farming. Better Decisions. Better Harvests.': 'ಸ್ಮಾರ್ಟ್ ಕೃಷಿ. ಉತ್ತಮ ನಿರ್ಧಾರಗಳು. ಸಮೃದ್ಧ ಬೆಳೆ.',
-    'Agri-MART uses Artificial Intelligence and Machine Learning to help farmers understand crops, detect disease, choose suitable crops, estimate yields, and monitor plant growth with confidence.': 'ಅಗ್ರಿ-ಮಾರ್ಟ್ ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ ಮತ್ತು ಯಂತ್ರ ಕಲಿಕೆಯನ್ನು ಬಳಸಿಕೊಂಡು ರೈತರಿಗೆ ಬೆಳೆಗಳನ್ನು ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲು, ರೋಗಗಳನ್ನು ಪತ್ತೆಹಚ್ಚಲು, ಸೂಕ್ತ ಬೆಳೆಗಳನ್ನು ಆರಿಸಲು, ಇಳುವರಿಯನ್ನು ಅಂದಾಜಿಸಲು ಮತ್ತು ವಿಶ್ವಾಸದಿಂದ ಸಸ್ಯಗಳ ಬೆಳವಣಿಗೆಯನ್ನು ಮೇಲ್ವಿಚಾರಣೆ ಮಾಡಲು ಸಹಾಯ ಮಾಡುತ್ತದೆ.',
+    'Agri-MART uses Artificial Intelligence and Machine Learning to help farmers understand crops, detect disease, choose suitable crops, and analyze market price risks with confidence.': 'ಅಗ್ರಿ-ಮಾರ್ಟ್ ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ ಮತ್ತು ಯಂತ್ರ ಕಲಿಕೆಯನ್ನು ಬಳಸಿಕೊಂಡು ರೈತರಿಗೆ ಬೆಳೆಗಳನ್ನು ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲು, ರೋಗಗಳನ್ನು ಪತ್ತೆಹಚ್ಚಲು, ಸೂಕ್ತ ಬೆಳೆಗಳನ್ನು ಆರಿಸಲು ಮತ್ತು ಮಾರುಕಟ್ಟೆ ಬೆಲೆ ಅಪಾಯಗಳನ್ನು ವಿಶ್ಲೇಷಿಸಲು ಸಹಾಯ ಮಾಡುತ್ತದೆ.',
     'Get Started': 'ಪ್ರಾರಂಭಿಸಿ',
     'Explore Features': 'ವೈಶಿಷ್ಟ್ಯಗಳನ್ನು ಅನ್ವೇಷಿಸಿ',
 
     // Features
     'Crop Recommendation': 'ಬೆಳೆ ಶಿಫಾರಸು',
     'Disease Detection': 'ರೋಗ ಪತ್ತೆ',
-    'Yield Prediction': 'ಇಳುವರಿ ಮುನ್ಸೂಚನೆ',
-    'Growth Monitoring': 'ಬೆಳವಣಿಗೆ ಮೇಲ್ವಿಚಾರಣೆ',
+    'Market Price & Risk Alert': 'ಮಾರುಕಟ್ಟೆ ದರ ಮತ್ತು ಅಪಾಯದ ಎಚ್ಚರಿಕೆ',
     'Market Prices': 'ಮಾರುಕಟ್ಟೆ ದರಗಳು',
     'Soil Analysis': 'ಮಣ್ಣಿನ ವಿಶ್ಲೇಷಣೆ',
     'Computer Vision': 'ಕಂಪ್ಯೂಟರ್ ದೃಷ್ಟಿ',
-    'Harvest Forecasting': 'ಸುಗ್ಗಿ ಮುನ್ಸೂಚನೆ',
+    'Price Risk Forecasting': 'ಬೆಲೆ ಅಪಾಯದ ಮುನ್ಸೂಚನೆ',
     'Learn More': 'ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ',
 
     // Footer & Common

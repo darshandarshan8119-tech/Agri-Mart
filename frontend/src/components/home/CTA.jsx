@@ -16,7 +16,7 @@ export default function CTA() {
               Ready to Make Farming <span className="cta-highlight">Smarter?</span>
             </h2>
             <p className="cta-desc">
-              Join Agri-MART and use the power of AI to diagnose crops, optimize soil nutrition, and predict harvest yields.
+              Join Agri-MART and use the power of AI to diagnose crops, optimize soil nutrition, and analyze market price risks.
             </p>
             <div className="cta-actions">
               <Link className="btn btn-cta-secondary" to="/login">

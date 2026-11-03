@@ -17,17 +17,10 @@ const featureCards = [
   },
   {
     cls: 'analytics',
-    iconPath: 'M5 20V4h2v14h13v2H5Zm4-4V9h3v7H9Zm5 0V6h3v10h-3Zm5 0v-5h3v5h-3Z',
-    title: 'Yield Prediction',
-    desc: 'Predict expected crop yield using historical, soil, weather, and farming data.',
-    label: 'Predict Yield',
-  },
-  {
-    cls: 'growth',
-    iconPath: 'M11 21v-5.1C7.1 15.4 4 12.1 4 8V5h3c2.5 0 4.7 1.3 6 3.2A7.5 7.5 0 0 1 19.5 5H21v2.5c0 4-3.1 7.4-7 7.9V21h-3Zm-5-14v1c0 2.8 2.2 5.2 5 5.8V13c0-3.3-2.7-6-6-6Zm8 6.4c2.8-.6 5-3 5-5.9V7.1c-2.9.6-5 3.2-5 6.3Z',
-    title: 'Plant Growth Monitoring',
-    desc: 'Track plant growth using images over time and identify unusual growth or potential problems.',
-    label: 'Monitor Growth',
+    iconPath: 'M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z',
+    title: 'Market Price & Risk Alert',
+    desc: 'Analyze live APMC spot rates, 5-level market depth, regional mandi net proceeds, and algorithmic hold vs. sell risk alerts.',
+    label: 'Track Market Prices',
   },
 ];
 
@@ -38,7 +31,7 @@ export default function Features() {
         <div className="section-heading reveal">
           <p className="eyebrow">Core AI tools</p>
           <h2>AI-Powered Agriculture</h2>
-          <p>Practical machine learning features for crop health, planning, productivity, and growth tracking.</p>
+          <p>Practical machine learning features for crop health, field planning, and realtime market price risk intelligence.</p>
         </div>
 
         <div className="feature-grid">

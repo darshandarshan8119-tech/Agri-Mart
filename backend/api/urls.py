@@ -9,8 +9,6 @@ urlpatterns = [
     # AI Feature Endpoints
     path('ai/disease-scan/', views.disease_scan_view, name='disease_scan'),
     path('ai/crop-recommendation/', views.crop_recommendation_view, name='crop_recommendation'),
-    path('ai/yield-prediction/', views.yield_prediction_view, name='yield_prediction'),
-    path('ai/growth-tracker/', views.growth_tracker_view, name='growth_tracker'),
     path('ai/assistant/', views.ai_assistant_view, name='ai_assistant'),
 
     # Market Rates & Risk Analysis

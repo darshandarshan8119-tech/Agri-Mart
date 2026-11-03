@@ -10,7 +10,6 @@ import {
 } from './marketData';
 import { sampleDiseases } from './diseaseData';
 import { calculateCropRecommendation, soilPresets } from './cropRecommendation';
-import { calculateYield } from './yieldCalculator';
 
 /**
  * Dispatches farmer messages to appropriate Agri-MART core capability
@@ -91,52 +90,7 @@ export async function processFarmerQuery(queryText, userContext = {}) {
     };
   }
 
-  // 3. YIELD PREDICTION INTENT (Harvest estimate, tonnage, revenue)
-  if (query.includes('yield') || query.includes('harvest') || query.includes('tonnage') || query.includes('how much quintal') || query.includes('revenue') || query.includes('production')) {
-    const yieldCalc = calculateYield({ crop: 'wheat', acres: 5, season: 'rabi', irrigation: 'drip', fertilizer: 'balanced' });
-    const totalQuintals = (parseFloat(yieldCalc.totalTonnes) * 10).toFixed(0);
-
-    return {
-      content: `Here is the estimated yield and gross revenue projection for **5 acres of Wheat** under optimal drip irrigation.\n\nExpected total harvest is **${totalQuintals} Quintals** with an estimated revenue of **₹${yieldCalc.grossRevenue}**.`,
-      cardType: 'yield',
-      cardData: {
-        crop: yieldCalc.cropName + ' (Rabi Season)',
-        acres: '5 Acres',
-        irrigation: 'Drip Irrigation',
-        yieldPerAcre: `${yieldCalc.yieldPerAcre} T/Acre`,
-        totalHarvest: `${yieldCalc.totalTonnes} Tonnes`,
-        estimatedRevenue: `₹${yieldCalc.grossRevenue}`,
-        mspBenchmark: `₹${yieldCalc.mspPerQtl}/Qtl`
-      },
-      actions: [
-        { label: '🚜 Open Yield Estimator', feature: 'yield' },
-        { label: '📊 View Market Selling Prices', feature: 'market', payload: { commodityId: 'wheat-ludhiana' } }
-      ]
-    };
-  }
-
-  // 4. PLANT GROWTH & NDVI INTENT (Phenology, growth stages, watering)
-  if (query.includes('growth') || query.includes('ndvi') || query.includes('stage') || query.includes('water') || query.includes('irrigation') || query.includes('schedule') || query.includes('vigor')) {
-    return {
-      content: `Your active wheat crop batch is currently in **Phase 3: Tillering & Stem Extension (Day 48)**.\n\nNDVI vegetative vigor index is **0.78 (Vibrant Green Canopy)** with top 5% chlorophyll health.`,
-      cardType: 'growth',
-      cardData: {
-        cropBatch: 'Wheat Field #3 (Day 48)',
-        currentStage: 'Stage 3: Tillering & Stemming',
-        progressPct: 80,
-        ndviScore: '0.78',
-        ndviStatus: 'Vibrant Green Canopy (Healthy)',
-        nextWatering: 'In 3 Days (Root Zone Moisture: 68%)',
-        nextAction: 'First Top-Dressing Urea / Nitrogen application'
-      },
-      actions: [
-        { label: '🌱 Open Growth Monitoring Tracker', feature: 'growth' },
-        { label: '📷 Scan Leaves for Deficiency', feature: 'disease' }
-      ]
-    };
-  }
-
-  // 5. REGIONAL MANDI COMPARISON & NET IN-HAND PROCEEDS
+  // 3. REGIONAL MANDI COMPARISON & NET IN-HAND PROCEEDS
   if (query.includes('compare') || query.includes('which mandi') || query.includes('best mandi') || query.includes('highest price') || query.includes('where to sell')) {
     const comparisons = compareRegionalMandis(targetCommodity, 100);
     const topMandi = comparisons[0];
