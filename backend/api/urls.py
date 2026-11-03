@@ -11,6 +11,7 @@ urlpatterns = [
     path('ai/crop-recommendation/', views.crop_recommendation_view, name='crop_recommendation'),
     path('ai/assistant/', views.ai_assistant_view, name='ai_assistant'),
 
-    # Market Rates & Risk Analysis
-    path('market/prices/', views.market_prices_view, name='market_prices'),
+    # Source-attributed daily market observations
+    path('market/observations/', views.market_observations_view, name='market_observations'),
+    path('market/sync-status/', views.market_sync_status_view, name='market_sync_status'),
 ]

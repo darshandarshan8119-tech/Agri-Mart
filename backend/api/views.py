@@ -15,6 +15,7 @@ from rest_framework import status
 
 from .ml.disease_loader import disease_handler
 from .ml.recommendation_loader import rec_handler
+from .models import MarketObservation, MarketSyncLog
 
 def home_template_view(request):
     """
@@ -94,92 +95,51 @@ def crop_recommendation_view(request):
     return Response(res)
 
 
-# Comprehensive Market Price Analysis & Risk Alert Endpoint
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def market_prices_view(request):
-    commodities = [
-        {
-            "id": "wheat-ludhiana",
-            "name": "Wheat (Sharbati)",
-            "mandi": "Ludhiana APMC, Punjab",
-            "price": 2450,
-            "prevPrice": 2390,
-            "change": "+2.4%",
-            "isUp": True,
-            "dayHigh": 2480,
-            "dayLow": 2410,
-            "volume": "4,250 Qtl",
-            "agmarknetBenchmark": 2275,
-            "grade": "Grade-A Sharbati",
-            "moisture": "11.2%",
-            "riskLevel": "LOW",
-            "action": "HOLD",
-            "recommendationReason": "Expected 7-day modal gain (+₹60/Qtl) exceeds storage cost (₹4.2/Qtl).",
-            "projected7Day": 2510
-        },
-        {
-            "id": "mustard-alwar",
-            "name": "Mustard (Pusa Bold)",
-            "mandi": "Alwar APMC, Rajasthan",
-            "price": 5680,
-            "prevPrice": 5580,
-            "change": "+1.8%",
-            "isUp": True,
-            "dayHigh": 5720,
-            "dayLow": 5550,
-            "volume": "2,890 Qtl",
-            "agmarknetBenchmark": 5650,
-            "grade": "High-Oil 42% Pusa Bold",
-            "moisture": "7.8%",
-            "riskLevel": "LOW",
-            "action": "HOLD",
-            "recommendationReason": "Crusher extraction demand high. Strong buyer absorption.",
-            "projected7Day": 5790
-        },
-        {
-            "id": "cotton-rajkot",
-            "name": "Cotton (Shankar-6)",
-            "mandi": "Rajkot APMC, Gujarat",
-            "price": 7140,
-            "prevPrice": 7180,
-            "change": "-0.6%",
-            "isUp": False,
-            "dayHigh": 7220,
-            "dayLow": 7110,
-            "volume": "6,400 Bales",
-            "agmarknetBenchmark": 7020,
-            "grade": "29mm Shankar-6",
-            "moisture": "8.4%",
-            "riskLevel": "HIGH_DOWNSIDE",
-            "action": "LIQUIDATE",
-            "recommendationReason": "Spinning mill demand soft; arrivals increasing +12%. Liquidate immediately.",
-            "projected7Day": 7040
-        },
-        {
-            "id": "paddy-karnal",
-            "name": "Basmati Paddy 1121",
-            "mandi": "Karnal APMC, Haryana",
-            "price": 4420,
-            "prevPrice": 4290,
-            "change": "+3.1%",
-            "isUp": True,
-            "dayHigh": 4460,
-            "dayLow": 4280,
-            "volume": "5,120 Qtl",
-            "agmarknetBenchmark": 3850,
-            "grade": "Export Grade 8.35mm",
-            "moisture": "12.0%",
-            "riskLevel": "LOW",
-            "action": "HOLD",
-            "recommendationReason": "Export demand strong. Millers actively building inventory.",
-            "projected7Day": 4540
-        }
-    ]
+def market_observations_view(request):
+    """Return source-attributed daily observations; intentionally never fabricates a quote."""
+    records = MarketObservation.objects.all()
+    demo_requested = request.query_params.get('include_demo') == '1'
+    # Never mix demonstrations into official results. Demo records are returned
+    # only after the client explicitly asks for them as a fallback.
+    records = records.filter(data_kind='demo' if demo_requested else 'official')
+    for field in ('state', 'district', 'commodity', 'variety'):
+        value = request.query_params.get(field, '').strip()
+        if value:
+            records = records.filter(**{f'{field}__iexact': value})
+    market = request.query_params.get('market', '').strip()
+    if market:
+        records = records.filter(market_name__iexact=market)
+    observed = request.query_params.get('date', '').strip()
+    if observed:
+        records = records.filter(arrival_date=observed)
+    results = [{
+        'id': item.id, 'state': item.state, 'district': item.district,
+        'market_name': item.market_name, 'commodity': item.commodity,
+        'variety': item.variety, 'arrival_date': item.arrival_date.isoformat(),
+        'min_price': float(item.min_price), 'max_price': float(item.max_price),
+        'modal_price': float(item.modal_price), 'arrival_quantity': float(item.arrival_quantity) if item.arrival_quantity is not None else None,
+        'price_unit': item.price_unit, 'source_name': item.source_name,
+        'source_url': item.source_url, 'data_kind': item.data_kind, 'estimated_distance_km': float(item.estimated_distance_km) if item.estimated_distance_km is not None else None,
+        'market_charge_estimate': float(item.market_charge_estimate) if item.market_charge_estimate is not None else None,
+    } for item in records[:200]]
+    latest = MarketObservation.objects.order_by('-arrival_date').values_list('arrival_date', flat=True).first()
+    return Response({'results': results, 'count': len(results), 'latest_available_observation_date': latest.isoformat() if latest else None, 'data_kind': 'demo' if demo_requested else 'official', 'data_policy': 'Demonstration data only; never use it for a selling decision.' if demo_requested else 'Daily source observations; not real-time quotes or guaranteed sale prices.'})
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def market_sync_status_view(request):
+    """Small operational status payload for the dashboard; credentials remain server-only."""
+    latest = MarketSyncLog.objects.first()
+    if not latest:
+        return Response({'last_successful_synchronization': None, 'status': 'not_started'})
+    last_success = MarketSyncLog.objects.filter(status__in=['success', 'partial']).first()
     return Response({
-        "status": "success",
-        "market": "APMC Realtime Market Intelligence",
-        "commodities": commodities
+        'status': latest.status,
+        'last_successful_synchronization': last_success.finished_at.isoformat() if last_success and last_success.finished_at else None,
+        'latest_run': {'started_at': latest.started_at.isoformat(), 'finished_at': latest.finished_at.isoformat() if latest.finished_at else None, 'records_fetched': latest.records_fetched, 'records_inserted': latest.records_inserted, 'records_updated': latest.records_updated, 'failed_requests': latest.failed_requests},
     })
 
 
@@ -217,8 +177,24 @@ def _openrouter_completion(messages, tools=None):
 
 def _tool_result(name, args, image_file=None):
     if name == 'get_market_prices':
-        # Keep the assistant aligned with the same data exposed by /market/prices/.
-        return {"commodities": [{"name": "Wheat (Sharbati)", "mandi": "Ludhiana APMC, Punjab", "price": 2450, "change": "+2.4%", "action": "HOLD", "projected7Day": 2510}, {"name": "Mustard (Pusa Bold)", "mandi": "Alwar APMC, Rajasthan", "price": 5680, "change": "+1.8%", "action": "HOLD", "projected7Day": 5790}, {"name": "Cotton (Shankar-6)", "mandi": "Rajkot APMC, Gujarat", "price": 7140, "change": "-0.6%", "action": "LIQUIDATE", "projected7Day": 7040}], "source": "Agri-MART market endpoint"}, "price", {"commodity": "Wheat (Sharbati)", "mandi": "Ludhiana APMC, Punjab", "currentPrice": 2450, "change": "+2.4%", "dayHigh": 2480, "dayLow": 2410}
+        records = list(MarketObservation.objects.order_by('-arrival_date')[:20])
+        if not records:
+            return {
+                'observations': [],
+                'message': 'No verified market observation is currently stored. Do not quote a price; explain that a source sync is needed.'
+            }, None, {}
+        observations = [{
+            'commodity': row.commodity, 'variety': row.variety,
+            'market': row.market_name, 'district': row.district,
+            'modal_price': float(row.modal_price), 'unit': row.price_unit,
+            'observation_date': row.arrival_date.isoformat(), 'source': row.source_name,
+        } for row in records]
+        first = observations[0]
+        return {'observations': observations, 'data_policy': 'Daily observations, not live quotes.'}, 'price', {
+            'commodity': first['commodity'], 'mandi': first['market'],
+            'currentPrice': first['modal_price'], 'observationDate': first['observation_date'],
+            'source': first['source'],
+        }
     if name == 'recommend_crop':
         result = rec_handler.predict(**{key: float(args[key]) for key in ('N', 'P', 'K', 'ph', 'rainfall', 'temp', 'humidity')})
         top = result['topCrop']

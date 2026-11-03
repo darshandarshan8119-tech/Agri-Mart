@@ -155,4 +155,25 @@ cd backend
 .\venv\Scripts\Activate.ps1
 python manage.py runserver 8000
 ```
-- Test endpoints in browser or Postman at `http://localhost:8000/api/market/prices/`.
+- Test observations in browser or Postman at `http://localhost:8000/api/market/observations/`.
+
+# Official market-data synchronization
+
+Set `DATA_GOV_API_KEY` in the backend environment (or `.env` locally). The key
+is used only by Django and is never returned to the browser.
+
+Run a one-off Karnataka sync:
+
+```bash
+python manage.py sync_agmarknet
+```
+
+For a lightweight daily worker, run this as a separate managed process:
+
+```bash
+python manage.py run_market_sync_scheduler --at 02:00
+```
+
+`--at` is UTC. Production deployments may instead schedule `sync_agmarknet`
+once daily with their platform scheduler. Each run is retained in
+`MarketSyncLog`; `/api/market/sync-status/` exposes only non-sensitive status.

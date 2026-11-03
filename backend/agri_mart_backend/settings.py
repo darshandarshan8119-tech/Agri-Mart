@@ -165,3 +165,11 @@ CORS_ALLOW_CREDENTIALS = True
 OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY', '')
 OPENROUTER_MODEL = os.environ.get('OPENROUTER_MODEL', 'google/gemini-2.5-flash')
 
+# Official daily market observations. Keep the key in the deployment environment,
+# never in React code or source control.
+DATA_GOV_MARKET_RESOURCE_ID = os.environ.get('DATA_GOV_MARKET_RESOURCE_ID', '9ef84268-d588-465a-a308-a864a43d0070')
+DATA_GOV_API_KEY = os.environ.get('DATA_GOV_API_KEY', '')
+DATA_GOV_MARKET_ENDPOINT = os.environ.get('DATA_GOV_MARKET_ENDPOINT', 'https://api.data.gov.in/resource')
+DATA_GOV_MARKET_PAGE_SIZE = int(os.environ.get('DATA_GOV_MARKET_PAGE_SIZE', '1000'))
+DATA_GOV_MARKET_TIMEOUT_SECONDS = int(os.environ.get('DATA_GOV_MARKET_TIMEOUT_SECONDS', '30'))
+
